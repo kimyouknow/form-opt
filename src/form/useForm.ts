@@ -1,43 +1,43 @@
-import { useState } from 'react';
+import { useState } from 'react'
 
-type ValidateChecker<T> = (inputsObj: T) => Record<keyof T, string>;
+type ValidateChecker<T> = (inputsObj: T) => Record<keyof T, string>
 
 export const EVENTS = {
   BLUR: 'blur',
   FOCUS_OUT: 'focusout',
   CHANGE: 'change',
-};
+}
 
 const FORM_MODE = {
   onChange: 'onChange',
   onSubmit: 'onSubmit',
   onBlur: 'onBlur',
-} as const;
+} as const
 
 interface UseFormOptions<T> {
-  initialValues: T;
-  submitCallback: (inputValues: T) => Promise<void>;
-  validate: ValidateChecker<T>;
-  mode?: keyof typeof FORM_MODE;
+  initialValues: T
+  submitCallback: (inputValues: T) => Promise<void>
+  validate: ValidateChecker<T>
+  mode?: keyof typeof FORM_MODE
 }
 
-export type ChangeHandler = (event: { target: any; type?: any }) => void;
+export type ChangeHandler = (event: { target: any; type?: any }) => void
 
 interface Control<T> {
-  id: keyof T;
-  onChange: ChangeHandler;
-  onBlur: ChangeHandler;
-  value: string | string[];
-  errorMessage: string;
+  id: keyof T
+  onChange: ChangeHandler
+  onBlur: ChangeHandler
+  value: string | string[]
+  errorMessage: string
 }
 
 export interface UseFormReturns<T> {
-  inputValues: T;
-  validateError: Record<keyof T, string>;
-  submitHandler: (event: React.FormEvent<HTMLFormElement>) => Promise<void>;
-  isTargetSatisfyValidate: (...ids: Array<keyof T>) => boolean;
-  satisfyAllValidates: boolean;
-  register: (id: keyof T, isInput?: boolean) => Control<T>;
+  inputValues: T
+  validateError: Record<keyof T, string>
+  submitHandler: (event: React.FormEvent<HTMLFormElement>) => Promise<void>
+  isTargetSatisfyValidate: (...ids: Array<keyof T>) => boolean
+  satisfyAllValidates: boolean
+  register: (id: keyof T, isInput?: boolean) => Control<T>
 }
 
 const useForm = <T extends Record<string, string | string[]>>({
@@ -46,47 +46,42 @@ const useForm = <T extends Record<string, string | string[]>>({
   validate,
   mode = FORM_MODE.onChange,
 }: UseFormOptions<T>) => {
-  const [inputValues, setInputValues] = useState<T>(initialValues);
-  const [validateError, setValidateError] = useState<Record<keyof T, string>>(
-    {} as Record<keyof T, string>
-  );
+  const [inputValues, setInputValues] = useState<T>(initialValues)
+  const [validateError, setValidateError] = useState<Record<keyof T, string>>({} as Record<keyof T, string>)
 
   const resetInputValues = () => {
-    setInputValues(initialValues);
-  };
+    setInputValues(initialValues)
+  }
 
   const resetValidateErrors = () => {
-    setValidateError({} as Record<keyof T, string>);
-  };
+    setValidateError({} as Record<keyof T, string>)
+  }
 
-  const satisfyAllValidates: boolean = Object.values(validate(inputValues)).every(
-    (value) => !value
-  );
+  const satisfyAllValidates: boolean = Object.values(validate(inputValues)).every(value => !value)
 
-  const isTargetSatisfyValidate = (...ids: Array<keyof T>): boolean =>
-    ids.every((id) => !validateError[id]);
+  const isTargetSatisfyValidate = (...ids: Array<keyof T>): boolean => ids.every(id => !validateError[id])
 
   const onChangeError = (id: keyof T, value: string) => {
     if (mode === FORM_MODE.onSubmit) {
-      setValidateError(validate({ ...inputValues, [id]: value }));
+      setValidateError(validate({ ...inputValues, [id]: value }))
     } else {
-      const res = validate({ ...inputValues, [id]: value });
-      setValidateError({ ...validateError, [id]: res[id] });
+      const res = validate({ ...inputValues, [id]: value })
+      setValidateError({ ...validateError, [id]: res[id] })
     }
-  };
+  }
 
-  const onBlur: ChangeHandler = (event) => {
-    const { id, value } = event.target;
-    setInputValues({ ...inputValues, [id]: value });
-    onChangeError(id, value);
-  };
+  const onBlur: ChangeHandler = event => {
+    const { id, value } = event.target
+    setInputValues({ ...inputValues, [id]: value })
+    onChangeError(id, value)
+  }
 
-  const onChange: ChangeHandler = (event) => {
-    const { id, value } = event.target;
-    setInputValues({ ...inputValues, [id]: value });
-    if (mode === FORM_MODE.onBlur) return;
-    onChangeError(id, value);
-  };
+  const onChange: ChangeHandler = event => {
+    const { id, value } = event.target
+    setInputValues({ ...inputValues, [id]: value })
+    if (mode === FORM_MODE.onBlur) return
+    onChangeError(id, value)
+  }
 
   const register = <K extends keyof T>(id: K) => {
     return {
@@ -95,29 +90,29 @@ const useForm = <T extends Record<string, string | string[]>>({
       onBlur,
       value: inputValues[id],
       errorMessage: validateError[id],
-    };
-  };
+    }
+  }
 
   const showEntireError = () => {
-    setValidateError(validate({ ...inputValues }));
+    setValidateError(validate({ ...inputValues }))
     Object.values(validateError)
-      .filter((error) => error)
-      .forEach((error) => {
-        alert('error');
-      });
-  };
+      .filter(error => error)
+      .forEach(error => {
+        alert('Error on Submit')
+      })
+  }
 
   const submitHandler = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
-    event && event.preventDefault();
+    event && event.preventDefault()
 
     if (!satisfyAllValidates) {
-      showEntireError();
-      return;
+      showEntireError()
+      return
     }
-    await submitCallback(inputValues);
-    resetInputValues();
-    resetValidateErrors();
-  };
+    await submitCallback(inputValues)
+    resetInputValues()
+    resetValidateErrors()
+  }
 
   return {
     inputValues,
@@ -126,7 +121,7 @@ const useForm = <T extends Record<string, string | string[]>>({
     satisfyAllValidates,
     isTargetSatisfyValidate,
     register,
-  };
-};
+  }
+}
 
-export default useForm;
+export default useForm
