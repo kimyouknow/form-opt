@@ -2,6 +2,12 @@ import { useState } from 'react';
 
 type ValidateChecker<T> = (inputsObj: T) => Record<keyof T, string>;
 
+export const EVENTS = {
+  BLUR: 'blur',
+  FOCUS_OUT: 'focusout',
+  CHANGE: 'change',
+};
+
 const FORM_MODE = {
   onChange: 'onChange',
   onSubmit: 'onSubmit',
@@ -15,14 +21,23 @@ interface UseFormOptions<T> {
   mode?: keyof typeof FORM_MODE;
 }
 
+export type ChangeHandler = (event: { target: any; type?: any }) => void;
+
+interface Control<T> {
+  id: keyof T;
+  onChange: ChangeHandler;
+  onBlur: ChangeHandler;
+  value: string | string[];
+  errorMessage: string;
+}
+
 export interface UseFormReturns<T> {
   inputValues: T;
   validateError: Record<keyof T, string>;
-  onChangeHandler: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlurHandler: (event: React.FocusEvent<HTMLInputElement>) => void;
   submitHandler: (event: React.FormEvent<HTMLFormElement>) => Promise<void>;
   isTargetSatisfyValidate: (...ids: Array<keyof T>) => boolean;
   satisfyAllValidates: boolean;
+  register: (id: keyof T, isInput?: boolean) => Control<T>;
 }
 
 const useForm = <T extends Record<string, string | string[]>>({
@@ -30,7 +45,7 @@ const useForm = <T extends Record<string, string | string[]>>({
   submitCallback,
   validate,
   mode = FORM_MODE.onChange,
-}: UseFormOptions<T>): UseFormReturns<T> => {
+}: UseFormOptions<T>) => {
   const [inputValues, setInputValues] = useState<T>(initialValues);
   const [validateError, setValidateError] = useState<Record<keyof T, string>>(
     {} as Record<keyof T, string>
@@ -52,25 +67,35 @@ const useForm = <T extends Record<string, string | string[]>>({
     ids.every((id) => !validateError[id]);
 
   const onChangeError = (id: keyof T, value: string) => {
-    if (mode === FORM_MODE.onChange || mode === FORM_MODE.onBlur) {
+    if (mode === FORM_MODE.onSubmit) {
+      setValidateError(validate({ ...inputValues, [id]: value }));
+    } else {
       const res = validate({ ...inputValues, [id]: value });
       setValidateError({ ...validateError, [id]: res[id] });
-    } else {
-      setValidateError(validate({ ...inputValues, [id]: value }));
     }
   };
 
-  const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onBlur: ChangeHandler = (event) => {
+    const { id, value } = event.target;
+    setInputValues({ ...inputValues, [id]: value });
+    onChangeError(id, value);
+  };
+
+  const onChange: ChangeHandler = (event) => {
     const { id, value } = event.target;
     setInputValues({ ...inputValues, [id]: value });
     if (mode === FORM_MODE.onBlur) return;
     onChangeError(id, value);
   };
 
-  const onBlurHandler = (event: React.FocusEvent<HTMLInputElement>): void => {
-    console.log(event);
-    const { id, value } = event.target;
-    onChangeError(id, value);
+  const register = <K extends keyof T>(id: K) => {
+    return {
+      id,
+      onChange,
+      onBlur,
+      value: inputValues[id],
+      errorMessage: validateError[id],
+    };
   };
 
   const showEntireError = () => {
@@ -97,11 +122,10 @@ const useForm = <T extends Record<string, string | string[]>>({
   return {
     inputValues,
     validateError,
-    onChangeHandler,
-    onBlurHandler,
     submitHandler,
     satisfyAllValidates,
     isTargetSatisfyValidate,
+    register,
   };
 };
 
