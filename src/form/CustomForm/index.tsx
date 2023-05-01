@@ -22,10 +22,10 @@ const CustomForm = () => {
     }
   }
   const { register, submitHandler, isTargetSatisfyValidate } = useForm({
-    initialValues: { email: '', password: '', options: [] as string[] },
+    initialValues: { email: '', password: '', options: [] as Array<{ label: string; value: string }> },
     validate: myFormValidate,
     submitCallback,
-    mode: 'onBlur',
+    mode: 'onChange',
   })
   const isSignUpValidate = isTargetSatisfyValidate('email', 'password')
   return (

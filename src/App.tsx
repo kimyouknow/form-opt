@@ -11,8 +11,8 @@ function App() {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/jotai" className={({ isActive }) => (isActive ? 'text-blue-600' : '')}>
-            Jotai Form
+          <NavLink to="/rhf" className={({ isActive }) => (isActive ? 'text-blue-600' : '')}>
+            RHF Form
           </NavLink>
         </li>
       </ul>
