@@ -7,7 +7,7 @@ interface SelectInputProps<T extends string> {
   label: string
   id: T
   placeholder: string
-  value: string[]
+  value: Array<{ label: string; value: string }>
   options: Array<Record<string, string>>
   onChange: (event: { target: any; type?: any }) => void
   onBlur: (event: { target: any; type?: any }) => void
@@ -28,8 +28,9 @@ const SelectInput = memo(
     const notifyRenderRef = useNotifyRender()
     const { containerRef, isDropdownOpen, handleClickDropdownTrigger, openDropdown } = useDropDown()
 
-    const addTarget = (_value: string) => {
-      const _filtered = [...new Set([...value, _value])]
+    const addTarget = (_label: string) => {
+      const target = options.find(({ label }) => label === _label)
+      const _filtered = [...new Set([...value, target])]
       onChange({
         target: {
           id,
@@ -45,7 +46,7 @@ const SelectInput = memo(
     }
 
     const deleteTarget = (_value: string) => {
-      const _filtered = value.filter(v => v !== _value)
+      const _filtered = value.filter(({ value: v }) => v !== _value)
       onChange({
         target: {
           id,
@@ -72,8 +73,8 @@ const SelectInput = memo(
               <div className=" text-slate-400">{placeholder}</div>
             ) : (
               <ul className="flex gap-1 align-middle">
-                {value.map(v => (
-                  <li key={v} className="just flex gap-4 rounded bg-slate-200 align-middle">
+                {value.map(({ label, value: v }) => (
+                  <li key={label} className="just flex gap-4 rounded bg-slate-200 align-middle">
                     <span className="pl-2">{v}</span>
                     <button onClick={() => deleteTarget(v)}>
                       <HiOutlineX className=" h-full rounded hover:bg-red-500 hover:text-white" />
@@ -87,7 +88,7 @@ const SelectInput = memo(
           {isDropdownOpen && (
             <ul>
               {options.map(({ label, value }) => (
-                <li key={value} onClick={() => addTarget(value)} className="hover:bg-blue-200">
+                <li key={value} onClick={() => addTarget(label)} className="hover:bg-blue-200">
                   <span>{label}</span>
                 </li>
               ))}
