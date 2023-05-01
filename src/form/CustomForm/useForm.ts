@@ -40,7 +40,7 @@ export interface UseFormReturns<T> {
   register: (id: keyof T, isInput?: boolean) => Control<T>
 }
 
-const useForm = <T extends Record<string, string | string[]>>({
+const useForm = <T extends Record<string, string | any[]>>({
   initialValues,
   submitCallback,
   validate,
