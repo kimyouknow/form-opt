@@ -1,16 +1,16 @@
-import { InputHTMLAttributes, forwardRef, memo } from 'react';
-import useNotifyRender from 'src/hooks/useNotifyRender';
+import { InputHTMLAttributes, forwardRef, memo } from 'react'
+import useNotifyRender from 'src/hooks/useNotifyRender'
 
 interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label: string;
-  id: string;
-  errorMessage: string | null | undefined;
+  label: string
+  id: string
+  errorMessage: string | null | undefined
 }
 
 const TextInput = memo(
   forwardRef<HTMLInputElement, TextInputProps>(
-    ({ label, id, placeholder, value, onChange, onBlur, errorMessage, type = 'text' }, ref) => {
-      const notifyRenderRef = useNotifyRender();
+    ({ label, id, placeholder, value, onChange, onBlur, errorMessage, type = 'text', ...rest }, ref) => {
+      const notifyRenderRef = useNotifyRender()
       return (
         <div ref={notifyRenderRef} className="flex w-full flex-col p-2">
           <label className="mb-2 font-semibold" htmlFor={id}>
@@ -27,13 +27,14 @@ const TextInput = memo(
               onChange={onChange}
               onBlur={onBlur}
               autoComplete="off"
+              {...rest}
             />
           </div>
           {errorMessage && <p className="mt-2 text-sm text-red-500">{errorMessage}</p>}
         </div>
-      );
-    }
-  )
-);
+      )
+    },
+  ),
+)
 
-export default TextInput;
+export default TextInput

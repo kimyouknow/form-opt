@@ -1,12 +1,24 @@
-import CustomForm from 'src/form/CustomForm';
-import './App.css';
+import { NavLink, Outlet } from 'react-router-dom'
+import './App.css'
 
 function App() {
   return (
-    <>
-      <CustomForm />
-    </>
-  );
+    <div>
+      <ul>
+        <li>
+          <NavLink to="/" className={({ isActive }) => (isActive ? 'text-blue-600' : '')}>
+            My Form
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/rhf" className={({ isActive }) => (isActive ? 'text-blue-600' : '')}>
+            RHF Form
+          </NavLink>
+        </li>
+      </ul>
+      <Outlet />
+    </div>
+  )
 }
 
-export default App;
+export default App

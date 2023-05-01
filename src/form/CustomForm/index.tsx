@@ -1,9 +1,9 @@
-import useForm from 'src/form/useForm'
 import TextInput from 'src/components/TextInput'
-import { MyFormValidateProps, myFormValidate } from 'src/form/validation'
 import Button from 'src/components/Button'
 import useNotifyRender from 'src/hooks/useNotifyRender'
 import SelectInput from 'src/components/SelectInput'
+import { MyFormValidateProps, myFormValidate } from 'src/service/service.validation'
+import useForm from 'src/form/CustomForm/useForm'
 
 const options = [
   { value: 'a', label: 'a' },
@@ -22,10 +22,10 @@ const CustomForm = () => {
     }
   }
   const { register, submitHandler, isTargetSatisfyValidate } = useForm({
-    initialValues: { email: '', password: '', options: [] as string[] },
+    initialValues: { email: '', password: '', options: [] as Array<{ label: string; value: string }> },
     validate: myFormValidate,
     submitCallback,
-    mode: 'onBlur',
+    mode: 'onChange',
   })
   const isSignUpValidate = isTargetSatisfyValidate('email', 'password')
   return (
