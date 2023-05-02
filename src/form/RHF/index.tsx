@@ -1,9 +1,9 @@
-import TextInput from 'src/components/TextInput'
-import Button from 'src/components/Button'
-import useNotifyRender from 'src/hooks/useNotifyRender'
-import SelectInput from 'src/components/SelectInput'
-import { MyFormValidateProps, rhfSchema } from 'src/service/service.validation'
 import { Controller, useForm } from 'react-hook-form'
+import { MyFormValidateProps, rhfSchema } from 'src/service/service.validation'
+import useNotifyRender from 'src/hooks/useNotifyRender'
+import TextInput from './TextInput'
+import Button from './Button'
+import SelectInput from './SelectInput'
 
 const options = [
   { value: 'a', label: 'a' },

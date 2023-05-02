@@ -1,9 +1,9 @@
-import TextInput from 'src/components/TextInput'
-import Button from 'src/components/Button'
-import useNotifyRender from 'src/hooks/useNotifyRender'
-import SelectInput from 'src/components/SelectInput'
-import { MyFormValidateProps, myFormValidate } from 'src/service/service.validation'
 import useForm from 'src/form/CustomForm/useForm'
+import useNotifyRender from 'src/hooks/useNotifyRender'
+import { MyFormValidateProps, myFormValidate } from 'src/service/service.validation'
+import Button from './Button'
+import TextInput from './TextInput'
+import SelectInput from './SelectInput'
 
 const options = [
   { value: 'a', label: 'a' },
