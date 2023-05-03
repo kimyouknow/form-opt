@@ -39,7 +39,7 @@ const CustomForm = () => {
         className="mx-auto my-auto mt-12 flex w-full flex-col items-center justify-center gap-4"
       >
         <TextInput label="Email" placeholder="Email address *" {...register('email')} />
-        <TextInput label="Password" placeholder="Password *" {...register('password')} />
+        <TextInput label="Password" type="password" placeholder="Password *" {...register('password')} />
         <SelectInput label="Options" placeholder="Options *" options={options} {...register('options')} />
         <Button text="SUBMIT" disabled={!isSignUpValidate} />
       </form>

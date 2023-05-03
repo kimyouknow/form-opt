@@ -56,6 +56,7 @@ const RHF = () => {
         />
         <TextInput
           id="password"
+          type="password"
           label="Password"
           placeholder="Password *"
           errorMessage={errors.password?.message}
