@@ -12,28 +12,29 @@ const TextInput = memo(
   forwardRef<InputRef, TextInputProps>(({ label, id, placeholder, validate, type = 'text', ...rest }, ref) => {
     const notifyRenderRef = useNotifyRender()
     const [value, setValue] = useState('')
-    const [error, setError] = useState('')
+    const [wasTouch, setWasTouch] = useState(false)
+    const error = wasTouch && validate(value)
 
     useImperativeHandle(ref, () => ({
       getInputValue: () => ({
         value,
-        error,
+        error: validate(value),
       }),
       reset: () => {
         setValue('')
-        setError('')
+        setWasTouch(false)
       },
     }))
 
     const onBlur = () => {
-      setError(validate(value))
+      setWasTouch(true)
     }
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const _value = event.target.value
       setValue(_value)
       if ((ref as MutableRefObject<InputRef>).current.mode !== 'onChange') return
-      setError(validate(_value))
+      setWasTouch(true)
     }
 
     return (
