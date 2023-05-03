@@ -15,7 +15,7 @@ const CustomForm = () => {
   const notifyRenderRef = useNotifyRender()
   const submitCallback = async ({ email, password, options }: MyFormValidateProps) => {
     try {
-      const message = `Email: ${email} & Password: ${password} & Options ${options.join(',')}`
+      const message = `Email: ${email} & Password: ${password} & Options ${options.map(v => v.value).join(', ')}`
       alert(message)
     } catch (error) {
       alert(error)
