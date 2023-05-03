@@ -1,4 +1,4 @@
-import { RefObject, useState } from 'react'
+import { RefObject } from 'react'
 import { useRef } from 'react'
 
 const FORM_MODE = {
@@ -44,10 +44,9 @@ const useFastForm = <T extends Record<string, string | any[]>>({
     acc[key] = useRef<InputRef>({
       mode,
       getInputValue: () => ({
-        value: '',
+        value,
         error: '',
       }),
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       reset: () => {},
     })
     return acc
@@ -68,9 +67,9 @@ const useFastForm = <T extends Record<string, string | any[]>>({
       return acc
     }, {} as T)
 
-  const satisfyAllValidates: boolean = Object.values(getInputValues('error')).every(value => !value)
+  const satisfyAllValidates = () => Object.values(getInputValues('error')).every(value => value === '')
 
-  // !ref기반이라서 변화가 일어날 때 마다 실시간 검증이 안 됨
+  // !ref기반이라서 변화가 일어날 때 마다 실시간 검증이 안 됨 => 제출할 때 검사해서 괜찮긴하지만 조건이 만족되지 않았을 때 비활성화하고 싶음
   const isTargetSatisfyValidate = (...ids: Array<keyof T>): boolean => {
     const _errors = getInputValues('error')
     return ids.every(id => !_errors[id])
@@ -79,17 +78,15 @@ const useFastForm = <T extends Record<string, string | any[]>>({
   const resetInputsValue = () => getEntries(inputRefs).forEach(([key, _ref]) => _ref.current?.reset())
 
   const showEntireError = () => {
-    Object.values(getInputValues('error'))
-      .filter(error => error)
-      .forEach(error => {
-        alert('Error on Submit')
-      })
+    getEntries(getInputValues('error')).forEach(([key, value]) => {
+      const msg = `${key as string}: ${value}}`
+      alert(msg)
+    })
   }
 
   const submitHandler = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event && event.preventDefault()
-
-    if (!satisfyAllValidates) {
+    if (!satisfyAllValidates()) {
       showEntireError()
       return
     }
