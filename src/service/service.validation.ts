@@ -33,6 +33,31 @@ export const myFormValidate = ({ email, password, options }: MyFormValidateProps
   return validateErrors
 }
 
+export const fastFormValidate = {
+  email(email: string): string {
+    if (!email) {
+      return '이메일이 입력되지 않았습니다.'
+    } else if (!email.match(emailRegex)) {
+      return '이메일 형식으로 입력해주세요.'
+    }
+    return ''
+  },
+  password(password: string): string {
+    if (!password) {
+      return '비빌번호가 입력되지 않았습니다.'
+    } else if (password.length < 8 || password.length > 20) {
+      return '비빌번호는 8자 이상 20자 이하이어야 합니다. '
+    }
+    return ''
+  },
+  options(options: Array<{ label: string; value: string }>): string {
+    if (options.length === 0) {
+      return '옵션이 입력되지 않았습니다. '
+    }
+    return ''
+  },
+}
+
 export const rhfSchema = yupResolver(
   yup
     .object({

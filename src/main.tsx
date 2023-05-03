@@ -5,6 +5,7 @@ import CustomForm from 'src/form/CustomForm'
 import RHF from 'src/form/RHF/index.tsx'
 import App from './App.tsx'
 import './index.css'
+import FastForm from 'src/form/FastForm/index.tsx'
 
 const routes = [
   {
@@ -13,6 +14,10 @@ const routes = [
       {
         path: '/',
         element: <CustomForm />,
+      },
+      {
+        path: '/fast',
+        element: <FastForm />,
       },
       {
         path: '/rhf',

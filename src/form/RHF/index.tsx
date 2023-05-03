@@ -1,9 +1,9 @@
-import TextInput from 'src/components/TextInput'
-import Button from 'src/components/Button'
-import useNotifyRender from 'src/hooks/useNotifyRender'
-import SelectInput from 'src/components/SelectInput'
-import { MyFormValidateProps, rhfSchema } from 'src/service/service.validation'
 import { Controller, useForm } from 'react-hook-form'
+import { MyFormValidateProps, rhfSchema } from 'src/service/service.validation'
+import useNotifyRender from 'src/hooks/useNotifyRender'
+import TextInput from './TextInput'
+import Button from './Button'
+import SelectInput from './SelectInput'
 
 const options = [
   { value: 'a', label: 'a' },
@@ -15,7 +15,7 @@ const RHF = () => {
   const notifyRenderRef = useNotifyRender()
   const submitCallback = async ({ email, password, options }: MyFormValidateProps) => {
     try {
-      const message = `Email: ${email} & Password: ${password} & Options ${options.join(',')}`
+      const message = `Email: ${email} & Password: ${password} & Options ${options.map(v => v.value).join(', ')}`
       alert(message)
     } catch (error) {
       alert(error)
@@ -56,6 +56,7 @@ const RHF = () => {
         />
         <TextInput
           id="password"
+          type="password"
           label="Password"
           placeholder="Password *"
           errorMessage={errors.password?.message}

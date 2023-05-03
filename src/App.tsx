@@ -11,6 +11,11 @@ function App() {
           </NavLink>
         </li>
         <li>
+          <NavLink to="/fast" className={({ isActive }) => (isActive ? 'text-blue-600' : '')}>
+            My Fast Form
+          </NavLink>
+        </li>
+        <li>
           <NavLink to="/rhf" className={({ isActive }) => (isActive ? 'text-blue-600' : '')}>
             RHF Form
           </NavLink>

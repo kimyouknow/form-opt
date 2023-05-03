@@ -1,9 +1,9 @@
-import useForm from 'src/form/CustomForm/useForm'
 import useNotifyRender from 'src/hooks/useNotifyRender'
-import { MyFormValidateProps, myFormValidate } from 'src/service/service.validation'
+import { MyFormValidateProps, fastFormValidate } from 'src/service/service.validation'
 import Button from './Button'
 import TextInput from './TextInput'
 import SelectInput from './SelectInput'
+import useFastForm from './useFastForm'
 
 const options = [
   { value: 'a', label: 'a' },
@@ -11,7 +11,7 @@ const options = [
   { value: 'c', label: 'c' },
 ]
 
-const CustomForm = () => {
+const FastForm = () => {
   const notifyRenderRef = useNotifyRender()
   const submitCallback = async ({ email, password, options }: MyFormValidateProps) => {
     try {
@@ -21,13 +21,13 @@ const CustomForm = () => {
       alert(error)
     }
   }
-  const { register, submitHandler, isTargetSatisfyValidate } = useForm({
+  const { register, submitHandler, isTargetSatisfyValidate } = useFastForm({
     initialValues: { email: '', password: '', options: [] as Array<{ label: string; value: string }> },
-    validate: myFormValidate,
+    validate: fastFormValidate,
     submitCallback,
     mode: 'onChange',
   })
-  const isSignUpValidate = isTargetSatisfyValidate('email', 'password')
+
   return (
     <div
       ref={notifyRenderRef}
@@ -39,12 +39,12 @@ const CustomForm = () => {
         className="mx-auto my-auto mt-12 flex w-full flex-col items-center justify-center gap-4"
       >
         <TextInput label="Email" placeholder="Email address *" {...register('email')} />
-        <TextInput label="Password" type="password" placeholder="Password *" {...register('password')} />
+        <TextInput type="password" label="Password" placeholder="Password *" {...register('password')} />
         <SelectInput label="Options" placeholder="Options *" options={options} {...register('options')} />
-        <Button text="SUBMIT" disabled={!isSignUpValidate} />
+        <Button text="SUBMIT" />
       </form>
     </div>
   )
 }
 
-export default CustomForm
+export default FastForm
