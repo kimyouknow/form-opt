@@ -1,14 +1,13 @@
 import { RefObject } from 'react'
 import { useRef } from 'react'
 
-const FORM_MODE = {
+export const FORM_MODE = {
   onChange: 'onChange',
   onSubmit: 'onSubmit',
   onBlur: 'onBlur',
 } as const
 
 export interface InputRef {
-  mode?: keyof typeof FORM_MODE
   getInputValue: () => {
     value: string | any
     error: string
@@ -42,7 +41,6 @@ const useFastForm = <T extends Record<string, string | any[]>>({
   const inputRefs = getEntries(initialValues).reduce((acc, [key, value]) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     acc[key] = useRef<InputRef>({
-      mode,
       getInputValue: () => ({
         value,
         error: '',
@@ -57,6 +55,7 @@ const useFastForm = <T extends Record<string, string | any[]>>({
       id,
       ref: inputRefs[id],
       validate: validate[id],
+      mode,
     }
   }
 

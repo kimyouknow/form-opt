@@ -27,7 +27,7 @@ const FastForm = () => {
     submitCallback,
     mode: 'onChange',
   })
-  const isSignUpValidate = true // isTargetSatisfyValidate('email', 'password')
+
   return (
     <div
       ref={notifyRenderRef}
@@ -41,7 +41,7 @@ const FastForm = () => {
         <TextInput label="Email" placeholder="Email address *" {...register('email')} />
         <TextInput type="password" label="Password" placeholder="Password *" {...register('password')} />
         <SelectInput label="Options" placeholder="Options *" options={options} {...register('options')} />
-        <Button text="SUBMIT" disabled={!isSignUpValidate} />
+        <Button text="SUBMIT" />
       </form>
     </div>
   )

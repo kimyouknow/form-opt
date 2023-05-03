@@ -1,15 +1,24 @@
-import { InputHTMLAttributes, MutableRefObject, forwardRef, memo, useImperativeHandle, useState } from 'react'
-import { InputRef } from 'src/form/FastForm/useFastForm'
+import {
+  InputHTMLAttributes,
+  MutableRefObject,
+  RefObject,
+  forwardRef,
+  memo,
+  useImperativeHandle,
+  useState,
+} from 'react'
+import { FORM_MODE, InputRef } from 'src/form/FastForm/useFastForm'
 import useNotifyRender from 'src/hooks/useNotifyRender'
 
 interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string
   id: string
   validate: (v: string) => string
+  mode: keyof typeof FORM_MODE
 }
 
 const TextInput = memo(
-  forwardRef<InputRef, TextInputProps>(({ label, id, placeholder, validate, type = 'text', ...rest }, ref) => {
+  forwardRef<InputRef, TextInputProps>(({ label, id, placeholder, validate, type = 'text', mode, ...rest }, ref) => {
     const notifyRenderRef = useNotifyRender()
     const [value, setValue] = useState('')
     const [wasTouch, setWasTouch] = useState(false)
@@ -33,7 +42,7 @@ const TextInput = memo(
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const _value = event.target.value
       setValue(_value)
-      if ((ref as MutableRefObject<InputRef>).current.mode !== 'onChange') return
+      if (mode !== 'onChange') return
       setWasTouch(true)
     }
 
