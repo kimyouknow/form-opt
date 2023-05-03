@@ -20,35 +20,41 @@ const SelectInput = memo(
     const { containerRef, isDropdownOpen, handleClickDropdownTrigger, openDropdown } = useDropDown()
 
     const [value, setValue] = useState<Option>([])
-    const [error, setError] = useState('')
+    const [wasTouch, setWasTouch] = useState(false)
+    const error = wasTouch && !isDropdownOpen && validate(value)
 
     useImperativeHandle(ref, () => ({
       getInputValue: () => ({
         value,
-        error,
+        error: validate(value),
       }),
       reset: () => {
         setValue([])
-        setError('')
+        setWasTouch(false)
       },
     }))
+
+    const handleClick = () => {
+      setWasTouch(true)
+      openDropdown()
+    }
 
     const addTarget = (_label: string) => {
       const target = options.find(({ label }) => label === _label)!
       const _filtered = [...new Set([...value, target])]
       setValue(_filtered)
-      setError(validate(_filtered))
+      setWasTouch(true)
     }
 
     const deleteTarget = (_value: string) => {
       const _filtered = value.filter(({ value: v }) => v !== _value)
       setValue(_filtered)
-      setError(validate(_filtered))
+      setWasTouch(true)
     }
 
     return (
       <div ref={notifyRenderRef} className="flex w-full flex-col p-2">
-        <div ref={containerRef} onClick={openDropdown}>
+        <div ref={containerRef} onClick={handleClick}>
           <label className="mb-2 font-semibold" htmlFor={id}>
             {label}
           </label>
